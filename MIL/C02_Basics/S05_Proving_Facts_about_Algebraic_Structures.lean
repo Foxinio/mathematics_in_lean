@@ -35,8 +35,11 @@ variable (x y z : α)
 #check (le_sup_right : y ≤ x ⊔ y)
 #check (sup_le : x ≤ z → y ≤ z → x ⊔ y ≤ z)
 
+#print Lattice
 example : x ⊓ y = y ⊓ x := by
-  sorry
+  apply le_antisymm
+  . apply (le_inf inf_le_right inf_le_left)
+  . apply (le_inf inf_le_right inf_le_left)
 
 example : x ⊓ y ⊓ z = x ⊓ (y ⊓ z) := by
   sorry
@@ -48,10 +51,14 @@ example : x ⊔ y ⊔ z = x ⊔ (y ⊔ z) := by
   sorry
 
 theorem absorb1 : x ⊓ (x ⊔ y) = x := by
-  sorry
+  apply le_antisymm
+  . apply inf_le_left
+  . apply le_inf (le_refl x) le_sup_left
 
 theorem absorb2 : x ⊔ x ⊓ y = x := by
-  sorry
+  apply le_antisymm
+  . apply sup_le (le_refl x) inf_le_left
+  . apply le_sup_left
 
 end
 

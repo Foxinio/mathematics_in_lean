@@ -31,24 +31,70 @@ example : min a b = min b a := by
   apply h
   apply h
 
-example : min a b = min b a := by
+theorem min_eq_symm : min a b = min b a := by
   apply le_antisymm
   repeat
     apply le_min
     apply min_le_right
     apply min_le_left
 
-example : max a b = max b a := by
-  sorry
+theorem max_eq_symm : max a b = max b a := by
+  apply le_antisymm
+  . apply max_le
+    . apply le_max_right
+    . apply le_max_left
+  . apply max_le
+    . apply le_max_right
+    . apply le_max_left
+
 example : min (min a b) c = min a (min b c) := by
-  sorry
-theorem aux : min a b + c ≤ min (a + c) (b + c) := by
-  sorry
-example : min a b + c = min (a + c) (b + c) := by
-  sorry
+  apply le_antisymm
+  . apply le_min
+    . apply le_trans
+      . apply min_le_left
+      . apply min_le_left
+    . apply le_min
+      . apply le_trans
+        . apply min_le_left
+        . apply min_le_right
+      . apply min_le_right
+  . apply le_min
+    . apply le_min
+      . apply min_le_left
+      . apply le_trans
+        . apply min_le_right
+        . apply min_le_left
+    . apply le_trans
+      . apply min_le_right
+      . apply min_le_right
+
+theorem min_add_aux1 : min a b + c ≤ min (a + c) (b + c) := by
+  apply le_min
+  . apply (add_le_add_iff_right c).mpr (min_le_left _ _)
+  . apply (add_le_add_iff_right c).mpr (min_le_right _ _)
+
+theorem min_add_aux2 : min (a + c) (b + c) ≤ min a b + c := by
+  have h : min (a + c) (b + c) = min (a + c) (b + c) - c + c := by
+    rw [sub_add_cancel]
+  rw [h]
+  apply (add_le_add_iff_right c).mpr
+  apply le_min
+  . apply sub_left_le_of_le_add
+    rw [add_comm c a]
+    apply min_le_left
+  . apply sub_left_le_of_le_add
+    rw [add_comm c b]
+    apply min_le_right
+
+theorem min_add : min a b + c = min (a + c) (b + c) := by
+  apply le_antisymm
+  . apply min_add_aux1
+  . apply min_add_aux2
+
 #check (abs_add_le : ∀ a b : ℝ, |a + b| ≤ |a| + |b|)
 
-example : |a| - |b| ≤ |a - b| :=
+example : |a| - |b| ≤ |a - b| := by
+  apply le_abs.mpr
   sorry
 end
 
