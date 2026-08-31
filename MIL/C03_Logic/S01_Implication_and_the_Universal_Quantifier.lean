@@ -21,8 +21,10 @@ variable (ha : |a| < δ) (hb : |b| < δ)
 
 end
 
-theorem my_lemma2 : ∀ {x y ε : ℝ}, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε :=
-  sorry
+theorem my_lemma2 : ∀ {x y ε : ℝ}, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε := by
+  intro x y ε Hεgt Hεle HlimX HlimY
+  rw [abs_mul, ← mul_one ε]
+  apply mul_lt_mul_of_nonneg HlimX (lt_of_lt_of_le HlimY Hεle) (abs_nonneg _) (abs_nonneg _)
 
 section
 variable (a b δ : ℝ)
