@@ -87,6 +87,10 @@ theorem neg_zero : (-0 : R) = 0 := by
   apply neg_eq_of_add_eq_zero
   rw [add_zero]
 
+theorem eq_neg_of_add_eq_zero {a b : R} (h : a + b = 0) : a = -b := by
+  rw [← add_zero a, ← add_neg_cancel_left a (-b)]
+  rw [← neg_add, h, neg_zero]
+
 theorem neg_neg (a : R) : - -a = a := by
   rw [neg_eq_of_add_eq_zero (neg_add_cancel a)]
 
@@ -142,7 +146,6 @@ variable {G : Type*} [Group G]
 
 namespace MyGroup
 
-
 theorem inv_mul_cancel_left (a b : G) : a⁻¹ * (a * b) = b := by
   rw [← mul_assoc, inv_mul_cancel, one_mul]
 
@@ -155,8 +158,16 @@ theorem inv_eq_of_mul_eq_one {a b : G} (h : a * b = 1) : a⁻¹ = b := by
 theorem inv_inv (a : G) : a = (a⁻¹)⁻¹ := by
   rw [inv_eq_of_mul_eq_one (inv_mul_cancel a)]
 
+theorem neg_mul_cancel_left (a b : G) : a⁻¹ * (a * b) = b := by
+  rw [← mul_assoc, inv_mul_cancel, one_mul]
+
+-- theorem mul_neg_cancel_right (a b : G) : a * b * b⁻¹ = a := by
+--   rw [mul_assoc, mul_comm b, neg_mul_cancel, mul_comm, zero_mul]
+
 theorem mul_inv_cancel (a : G) : a * a⁻¹ = 1 := by
-  rw [← h]
+  have h : 1 * a = a := one_mul a
+  rw [← inv_mul_cancel a] at h
+  rw [← one_mul (a⁻¹), ← mul_assoc, ← inv_mul_cancel a]
   sorry
 
 theorem mul_one (a : G) : a * 1 = a := by
