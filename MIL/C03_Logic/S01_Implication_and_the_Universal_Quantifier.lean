@@ -7,8 +7,10 @@ namespace C03S01
 
 #check ∀ x y ε : ℝ, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε
 
-theorem my_lemma : ∀ x y ε : ℝ, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε :=
-  sorry
+theorem my_lemma : ∀ x y ε : ℝ, 0 < ε → ε ≤ 1 → |x| < ε → |y| < ε → |x * y| < ε := by
+  intro x y ε nne ele1 xlte ylte 
+  rw [abs_mul, ← mul_one ε]
+  apply mul_lt_mul_of_nonneg xlte (lt_of_lt_of_le ylte ele1) (abs_nonneg _) (abs_nonneg _)
 
 section
 variable (a b δ : ℝ)
@@ -123,7 +125,7 @@ example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x :=
 example {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x := by
   intro a b aleb
   dsimp
-  apply mul_le_mul_of_nonneg (le_refl _) (mf aleb) 
+  apply mul_le_mul_of_nonneg_left (mf aleb) nnc
   sorry
 
 
