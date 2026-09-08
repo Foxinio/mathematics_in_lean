@@ -32,11 +32,18 @@ example (h : ∀ a, ∃ x, f x > a) : ¬FnHasUb f := by
   have : f x ≤ a := fnuba x
   linarith
 
-example (h : ∀ a, ∃ x, f x < a) : ¬FnHasLb f :=
-  sorry
+example (h : ∀ a, ∃ x, f x < a) : ¬FnHasLb f := by
+  rintro ⟨b, h'⟩
+  rcases h b with ⟨x, h⟩
+  apply not_le_of_gt h (h' x)
 
-example : ¬FnHasUb fun x ↦ x :=
-  sorry
+example : ¬FnHasUb fun x ↦ x := by
+  rintro ⟨x, h⟩
+  apply (not_forall_not (p:=λ y => x < y)).mpr
+  . use x+1
+    apply lt_add_of_pos_right; norm_num
+  . intro z xltz
+    apply not_le_of_gt xltz (h z)
 
 #check (not_le_of_gt : a > b → ¬a ≤ b)
 #check (not_lt_of_ge : a ≥ b → ¬a < b)
