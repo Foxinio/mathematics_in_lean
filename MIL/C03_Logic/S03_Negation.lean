@@ -51,7 +51,10 @@ example : ¬FnHasUb fun x ↦ x := by
 #check (le_of_not_gt : ¬a > b → a ≤ b)
 
 example (h : Monotone f) (h' : f a < f b) : a < b := by
-  sorry
+  unfold Monotone at h
+  apply lt_of_not_ge
+  intro blea
+  apply not_le_of_gt h' (h blea)
 
 example (h : a ≤ b) (h' : f b < f a) : ¬Monotone f := by
   sorry
