@@ -124,10 +124,7 @@ example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f x + g x :=
 
 example {c : ℝ} (mf : Monotone f) (nnc : 0 ≤ c) : Monotone fun x ↦ c * f x := by
   intro a b aleb
-  dsimp
   apply mul_le_mul_of_nonneg_left (mf aleb) nnc
-  sorry
-
 
 example (mf : Monotone f) (mg : Monotone g) : Monotone fun x ↦ f (g x) :=
   sorry
@@ -146,13 +143,19 @@ example (ef : FnEven f) (eg : FnEven g) : FnEven fun x ↦ f x + g x := by
 
 
 example (of : FnOdd f) (og : FnOdd g) : FnEven fun x ↦ f x * g x := by
-  sorry
+  intro x
+  dsimp
+  rw [og, of, neg_mul_neg]
 
 example (ef : FnEven f) (og : FnOdd g) : FnOdd fun x ↦ f x * g x := by
-  sorry
+  intro x
+  dsimp
+  rw [og, ef, neg_mul_eq_mul_neg]
 
 example (ef : FnEven f) (og : FnOdd g) : FnEven fun x ↦ f (g x) := by
-  sorry
+  intro x
+  dsimp
+  rw [og, ef, neg_neg]
 
 end
 
@@ -164,10 +167,13 @@ example : s ⊆ s := by
   intro x xs
   exact xs
 
+#print Subset
+
 theorem Subset.refl : s ⊆ s := fun _x xs ↦ xs
 
 theorem Subset.trans : r ⊆ s → s ⊆ t → r ⊆ t := by
-  sorry
+  intro rsubs ssubt x xinr
+  apply ssubt (rsubs xinr)
 
 end
 
@@ -178,8 +184,9 @@ variable (s : Set α) (a b : α)
 def SetUb (s : Set α) (a : α) :=
   ∀ x, x ∈ s → x ≤ a
 
-example (h : SetUb s a) (h' : a ≤ b) : SetUb s b :=
-  sorry
+example (h : SetUb s a) (h' : a ≤ b) : SetUb s b := by
+  intro x xins
+  apply le_trans (h _ xins) h'
 
 end
 
@@ -192,12 +199,20 @@ example (c : ℝ) : Injective fun x ↦ x + c := by
   exact (add_left_inj c).mp h'
 
 example {c : ℝ} (h : c ≠ 0) : Injective fun x ↦ c * x := by
-  sorry
+  intro a₁ a₂ heq
+  apply mul_eq_mul_left_iff.mp at heq
+  rcases heq
+  case inl h1 =>
+    exact h1
+  case inr h2 =>
+    exfalso
+    apply h h2
 
 variable {α : Type*} {β : Type*} {γ : Type*}
 variable {g : β → γ} {f : α → β}
 
 example (injg : Injective g) (injf : Injective f) : Injective fun x ↦ g (f x) := by
-  sorry
+  intros a₁ a₂ heq
+  apply injf (injg heq)
 
 end
