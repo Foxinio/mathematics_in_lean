@@ -57,17 +57,27 @@ example (h : Monotone f) (h' : f a < f b) : a < b := by
   apply not_le_of_gt h' (h blea)
 
 example (h : a ≤ b) (h' : f b < f a) : ¬Monotone f := by
-  sorry
+  intro mf
+  unfold Monotone at mf
+  have := mf h
+  linarith
 
 example : ¬∀ {f : ℝ → ℝ}, Monotone f → ∀ {a b}, f a ≤ f b → a ≤ b := by
   intro h
   let f := fun x : ℝ ↦ (0 : ℝ)
-  have monof : Monotone f := by sorry
+  have monof : Monotone f := by
+    intro a b aleb
+    rfl
   have h' : f 1 ≤ f 0 := le_refl _
-  sorry
+  have := @h f monof 1 0 h'
+  linarith
 
 example (x : ℝ) (h : ∀ ε > 0, x < ε) : x ≤ 0 := by
-  sorry
+  apply le_of_not_gt
+  intro Oltx
+  have := h x
+  have xgt0 : x > 0 := by linarith
+  apply lt_irrefl _ (this xgt0)
 
 end
 
